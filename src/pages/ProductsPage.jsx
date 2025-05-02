@@ -11,7 +11,7 @@ const ProductsPage = () => {
                     <form>
                         <div className="row justify-content-center">
                             <div className="col gx-1">
-                                <input className="form-control" type="text" placeholder="Pesquise um produto ..." />
+                                <input className="form-control" type="text" placeholder="Pesquise um produto" />
                             </div>
                             <div className="col gx-0">
                                 <input className="btn btn-primary" type="submit" value="Pesquisar" />

@@ -22,18 +22,17 @@ const ProductListings = () => {
             const data = await res.json();
             setProducts(data);
             setLoading(false);
-        };
-
+        }
         fetchProducts();
-    }, []);
 
+    }, []);
 
     return (
         <>
             {loading ? <Spinner /> :
                 <>
                     <div className="container my-4 text-center">
-                        <div className="row g-4 justify-content-center">
+                        <div className="row g-4 justify-content-left">
                             {
                                 products.map((p) => <ProductListing key={p.id} product={p} />)
                             }
