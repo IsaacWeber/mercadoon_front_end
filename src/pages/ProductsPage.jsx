@@ -1,8 +1,11 @@
-import Card from "../components/Card";
+import ProductListings from "../components/ProductListings";
 
 const ProductsPage = () => {
+
+
     return (
         <>
+
             <div className="header">
                 <div className="container-fluid my-2 mx-4">
                     <form>
@@ -17,20 +20,9 @@ const ProductsPage = () => {
                     </form>
                 </div>
             </div>
-
-            <div className="container my-4 text-center">
-                <div className="row g-4 justify-content-center">
-                    <div className="col-sm-3">
-                        <Card
-                            src="https://picsum.photos/300/200"
-                            alt="imagem.png"
-                            title="-- Nome do Produto --"
-                            text="-- Descrição do produto --"
-                        />
-                    </div>
-                </div>
+            <div className="content">
+                <ProductListings />
             </div>
-
         </>
     );
 };
