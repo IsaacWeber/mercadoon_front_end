@@ -2,27 +2,30 @@ import ProductListing from "./ProductListing";
 import { useState, useEffect } from 'react';
 import Spinner from '../components/Spinner';
 
-const ProductListings = () => {
+const ProductListings = ({ recents = false }) => {
     const username = "t@email.com";
     const password = "b@123";
 
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+    const url = recents ? "http://localhost:8080/api/produto/recentes" : "http://localhost:8080/api/produto";
+    
+    useEffect(() => {   
         const fetchProducts = async () => {
-            const res = await fetch("http://localhost:8080/api/produto", {
+            const res = await fetch(url, {
                 method: "GET",
                 headers: {
                     "Authorization": "Basic " + btoa(username + ":" + password),
                     "Content-Type": "application/json",
                 }
             });
-
+            
             const data = await res.json();
             setProducts(data);
             setLoading(false);
         }
+        
         fetchProducts();
 
     }, []);
