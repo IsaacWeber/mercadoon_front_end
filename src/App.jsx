@@ -4,7 +4,9 @@ import MainLayout from './layouts/MainLayout';
 import ProductsPage from './pages/ProductsPage';
 import PublishPage from './pages/PublishPage';
 import NotFoundPage from './pages/NotFoundPage';
+import ProductDetailsPage from './pages/ProductDetailsPage';
 import "bootstrap-icons/font/bootstrap-icons.css";
+
 function App() {
   
   const router = createBrowserRouter(
@@ -13,6 +15,7 @@ function App() {
         <Route index element={<HomePage/>}/>
         <Route path="/products" element={<ProductsPage/>}/>
         <Route path="/publish" element={<PublishPage/>}/>
+        <Route path="/product_details/:id" element={<ProductDetailsPage/>}/>
         <Route path="*" element={<NotFoundPage/>}/>
       </Route>
     )

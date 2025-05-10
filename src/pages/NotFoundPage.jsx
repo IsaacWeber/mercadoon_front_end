@@ -3,7 +3,7 @@ import notFoundImg from '../assets/404_not_found.png';
 const NotFoundPage = () => {
     return (
         <>
-            <div className="d-flex flex-column align-items-center">
+            <div className="d-flex flex-column align-items-center" style={{ margin: '0 0 15% 0'}}>
                 <div className="fs-2">
                     <span>Ops ...</span>
                 </div>

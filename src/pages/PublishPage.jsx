@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const PublishPage = () => {
     const [name, setName] = useState("");
     const [brand, setBrand] = useState("");
-    const [category, setCategory] = useState(-1);
+    const [category, setCategory] = useState(0);
     const [model, setModel] = useState("");
     const [color, setColor] = useState("");
     const [desc, setDesc] = useState("");
@@ -11,49 +13,66 @@ const PublishPage = () => {
     const [price, setPrice] = useState(0.0);
     const [images, setImages] = useState([]);
 
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+
     const username = "t@email.com";
     const password = "b@123";
     const idCliente = 6; // Client has to exist. Use current client id in session
 
     const submitForm = async () => {
-        const newProduct = {
-            "nome": name,
-            "marca": brand,
-            "categoria": category,
-            "modelo": model,
-            "cor": color,
-            "descricao": desc,
-            "descricaoTecnica": techDesc,
-            "preco": price,
+        if (!loading) {
+            setLoading(true);
+
+            try {
+                const newProduct = {
+                    "nome": name,
+                    "marca": brand,
+                    "categoria": category,
+                    "modelo": model,
+                    "cor": color,
+                    "descricao": desc,
+                    "descricaoTecnica": techDesc,
+                    "preco": price,
+                }
+
+                const res = await fetch("http://localhost:8080/api/produto/" + idCliente, {
+                    method: 'POST',
+                    headers: {
+                        "Authorization": "Basic " + btoa(username + ":" + password),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newProduct)
+                });
+
+                if (images.length > 0) {
+                    const data = await res.json();
+
+                    const formData = new FormData();
+                    formData.append("produtoId", data.id);
+
+                    for (let i = 0; i < images.length; ++i) {
+                        formData.append("arquivos", images[i]);
+                    }
+
+                    const res2 = await fetch("http://localhost:8080/api/arquivo/upload_imagens_produto", {
+                        method: 'POST',
+                        headers: {
+                            "Authorization": "Basic " + btoa(username + ":" + password),
+                        },
+                        body: formData
+                    });
+                }
+
+                toast.success("Produto cadastrado!")
+                navigate("/products");
+            } catch (error) {
+                toast.error("Erro ao cadastrar produto. Contate o administrador.");
+                console.log("Erro ao cadastrar produto. ",)
+            } finally {
+                setLoading(false);
+            }
         }
-
-        const res = await fetch("http://localhost:8080/api/produto/" + idCliente, {
-            method: 'POST',
-            headers: {
-                "Authorization": "Basic " + btoa(username + ":" + password),
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newProduct)
-        });
-
-        const data = await res.json();
-
-        const formData = new FormData();
-        formData.append("produtoId", data.id);
-
-        for (let i = 0; i < images.length; ++i) {
-            formData.append("arquivos", images[i]);
-        }
-
-        const res2 = await fetch("http://localhost:8080/api/arquivo/upload_imagens_produto", {
-            method: 'POST',
-            headers: {
-                "Authorization": "Basic " + btoa(username + ":" + password),
-            },
-            body: formData
-        });
-
-        alert('success!')
     }
 
     const handleImages = (e) => {
@@ -74,19 +93,21 @@ const PublishPage = () => {
                     <div className="row my-2">
                         <div className="col">
                             <label htmlFor="product_name" className="form-label">Nome</label>
-
+                            <span style={{ color: 'red' }}> *</span>
                             <input
                                 id="product_name"
                                 type="text" className="form-control"
                                 placeholder="Digite o nome do produto"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
+                                required
                             />
                         </div>
                     </div>
                     <div className="row my-2">
                         <div className="col">
                             <label htmlFor="product_brand" className="form-label">Marca</label>
+                            <span style={{ color: 'red' }}> *</span>
                             <input
                                 id="product_brand"
                                 type="text"
@@ -94,20 +115,21 @@ const PublishPage = () => {
                                 placeholder="Digite a marca do produto"
                                 value={brand}
                                 onChange={(e) => setBrand(e.target.value)}
+                                required
                             />
                         </div>
                     </div>
                     <div className="row my-2">
                         <div className="col">
                             <label htmlFor="product_category" className="form-label">Categoria</label>
+                            <span style={{ color: 'red' }}> *</span>
                             <select
-                                name=""
                                 id="product_category"
                                 className="form-control"
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
+                                required
                             >
-                                <option defaultValue={-1}>Escolha a categoria do produto</option>
                                 <option value="0">ELETRÔNICOS</option>
                                 <option value="1">ELETRODOMÉSTICOS</option>
                                 <option value="2">VEÍCULOS</option>
@@ -128,6 +150,7 @@ const PublishPage = () => {
                     <div className="row my-2">
                         <div className="col">
                             <label htmlFor="product_model" className="form-label">Modelo</label>
+                            <span style={{ color: 'red' }}> *</span>
                             <input
                                 id="product_categproduct_modelory"
                                 type="text"
@@ -135,12 +158,14 @@ const PublishPage = () => {
                                 placeholder="Digite o modelo do produto"
                                 value={model}
                                 onChange={(e) => setModel(e.target.value)}
+                                required
                             />
                         </div>
                     </div>
                     <div className="row my-2">
                         <div className="col">
                             <label htmlFor="product_color" className="form-label">Cor</label>
+                            <span style={{ color: 'red' }}> *</span>
                             <input
                                 id="product_color"
                                 type="text"
@@ -148,12 +173,14 @@ const PublishPage = () => {
                                 placeholder="Digite a cor do produto"
                                 value={color}
                                 onChange={(e) => setColor(e.target.value)}
+                                required
                             />
                         </div>
                     </div>
                     <div className="row my-2">
                         <div className="col">
                             <label htmlFor="product_desc" className="form-label">Descrição</label>
+                            <span style={{ color: 'red' }}> *</span>
                             <textarea
                                 id="product_desc"
                                 className="form-control"
@@ -161,6 +188,7 @@ const PublishPage = () => {
                                 rows="5"
                                 value={desc}
                                 onChange={(e) => setDesc(e.target.value)}
+                                required
                             >
                             </textarea>
                         </div>
@@ -180,15 +208,20 @@ const PublishPage = () => {
                     </div>
                     <div className="row my-2">
                         <div className="col">
-                            <label htmlFor="product_price" className="form-label">Preço</label>
+                            <label htmlFor="product_price" className="form-label" style={{ margin: '0 10px 0 0' }}>Preço:</label>
+                            <span style={{ color: 'red' }}> * </span>
+                            <span>R$</span>
                             <input
                                 id="product_price"
-                                type="text"
-                                className="form-control"
-                                placeholder="R$ 0,00"
+                                type="number"
+                                placeholder="0"
+                                className="from-control form-control-md mx-1"
                                 value={price}
                                 onChange={(e) => setPrice(e.target.value)}
+                                onClick={(e) => e.target.select()}
+                                required
                             />
+                            <input className="from-control form-control-md" style={{ width: '4%' }} type="text" value=",00" readOnly />
                         </div>
                     </div>
                     <div className="row my-2">
@@ -210,7 +243,8 @@ const PublishPage = () => {
                         </div>
                     </div>
                 </div>
-            </form>
+            </form> 
+
         </>
     );
 };

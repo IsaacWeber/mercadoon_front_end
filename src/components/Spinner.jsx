@@ -14,6 +14,7 @@ const Spinner = ({ loading }) => {
                 cssOverride={ override }
                 size={ 150 }
             />
+            <div style={{margin: '0 0 25% 0'}}></div>
         </>
     );
 };
